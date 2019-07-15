@@ -2,14 +2,20 @@
   <div class="longin-box">
     <div class="login">
       <h2>用户登录</h2>
-      <el-form :label-position="labelPosition" label-width="80px" :model="formLogin" :rules="rules">
+      <el-form
+        :label-position="labelPosition"
+        label-width="80px"
+        :model="formLogin"
+        :rules="rules"
+        ref="formLogin"
+      >
         <el-form-item label="用户账户" prop="username">
           <el-input type="text" v-model="formLogin.username"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="formLogin.password"></el-input>
         </el-form-item>
-        <el-button type="primary" class="submit" @click.prevent="submit">登录</el-button>
+        <el-button type="primary" class="submit" @click.prevent="submit('formLogin')">登录</el-button>
       </el-form>
     </div>
   </div>
@@ -53,23 +59,25 @@ export default {
   //方法
   methods: {
     //登录
-    submit() {
-      //非空判断
-      if (this.formLogin.username == "" || this.formLogin.password == "") {
-        return this.$message.error("用户名和密码不能为空,请重新输入!");
-      }
-      //登录请求
-      login(this.formLogin).then(backData => {
-        if (backData.data.meta.status == 200) {
-          //登录成功
-          this.$message.success(backData.data.meta.msg);
-          //存储token
-          window.sessionStorage.setItem("token", backData.data.data.token);
-          //跳转到后台主页
-          this.$router.push("/index");
+    submit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          //登录请求
+          login(this.formLogin).then(backData => {
+            if (backData.data.meta.status == 200) {
+              //登录成功
+              this.$message.success(backData.data.meta.msg);
+              //存储token
+              window.sessionStorage.setItem("token", backData.data.data.token);
+              //跳转到后台主页
+              this.$router.push("/index");
+            } else {
+              //登录失败
+              this.$message.error(backData.data.meta.msg);
+            }
+          });
         } else {
-          //登录失败
-          this.$message.error(backData.data.meta.msg);
+          return false;
         }
       });
     }
