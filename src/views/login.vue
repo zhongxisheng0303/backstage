@@ -49,6 +49,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+//大盒子
 .longin-box {
   width: 100%;
   height: 100%;
@@ -56,6 +57,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  //登录盒子
   .login {
     width: 580px;
     height: 435px;
