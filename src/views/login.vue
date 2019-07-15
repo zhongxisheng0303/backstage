@@ -9,13 +9,15 @@
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="formLogin.password"></el-input>
         </el-form-item>
-        <el-button type="primary" class="submit" @click.prevent="login">登录</el-button>
+        <el-button type="primary" class="submit" @click.prevent="submit">登录</el-button>
       </el-form>
     </div>
   </div>
 </template>
 
 <script>
+//导入接口
+import {login} from '../api/http';
 export default {
   name: "login",
   //数据
@@ -41,8 +43,25 @@ export default {
   //方法
   methods: {
       //登录
-      login(){
-          
+      submit(){
+         //非空判断
+         if(this.formLogin.username == '' || this.formLogin.password == ''){
+             return this.$message.error('用户名和密码不能为空,请重新输入!')
+         }
+         //登录请求
+         login(this.formLogin).then(backData => {
+             if(backData.data.meta.status == 200){
+                 //登录成功
+                 this.$message.success(backData.data.meta.msg);
+                 //跳转到后台主页
+                 this.$router.push('/index');
+                 //存储token
+                 window.sessionStorage.setItem('token',backData.data.data.token)
+             }else{
+                 //登录失败
+                 this.$message.error(backData.data.meta.msg)
+             }
+         })
       }
   },
 };

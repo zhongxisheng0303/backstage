@@ -11,6 +11,11 @@ import index from '../views/index.vue';
 
 //路由规则
 const routes = [
+    //重定向
+    {
+        path: '/',
+        redirect: 'login'
+    },
     //登录页
     {
         path: '/login',
