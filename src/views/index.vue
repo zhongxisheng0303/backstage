@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <el-header class="my-header">
       <el-row>
-          <!-- logo -->
+        <!-- logo -->
         <el-col :span="4" style="height:60px;">
           <div class="grid-content bg-purple">
             <img src="../assets/img/logo.png" alt height="60" />
@@ -18,7 +18,7 @@
         <!-- 退出 -->
         <el-col :span="1">
           <div class="grid-content bg-purple">
-            <a href="#" style="color:#000;">退出</a>
+            <a href="#" style="color:#000;" @click.prevent="logout">退出</a>
           </div>
         </el-col>
       </el-row>
@@ -67,7 +67,38 @@
 
 <script>
 export default {
-  name: "index"
+  name: "index",
+  //数据
+  data() {
+    return {};
+  },
+  //方法
+  methods: {
+    //登出
+    logout() {
+      this.$confirm("确定退出当前账号吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          //删除token
+          window.sessionStorage.removeItem('token');
+          //跳转到登录页
+          this.$router.push('/login');
+          this.$message({
+            type: "success",
+            message: "退出成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消退出!"
+          });
+        });
+    }
+  }
 };
 </script>
 
