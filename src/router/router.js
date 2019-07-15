@@ -20,6 +20,8 @@ const routes = [
     {
         path: '/login',
         component: login,
+        //路由原信息
+        meta: { requiresAuth: false }
     },
     //后台首页
     {
@@ -31,6 +33,22 @@ const routes = [
 //实例路由
 const router = new VueRouter({
     routes,
+});
+
+//导航守卫
+router.beforeEach((to, from, next) => {
+    if (to.meta.requiresAuth != false) {
+        if (window.sessionStorage.getItem('token') == undefined) {
+            //警告
+            new Vue().$message.error('请先登录账号!');
+            //跳转到登录页
+            router.push('/login');
+        } else {
+            next();
+        }
+    } else {
+        next();
+    }
 });
 
 //暴露路由

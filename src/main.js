@@ -18,4 +18,5 @@ new Vue({
   render: h => h(App),
   //将路由挂载到vue实例
   router,
-}).$mount('#app')
+}).$mount('#app');
+

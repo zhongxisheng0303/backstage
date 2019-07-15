@@ -17,7 +17,7 @@
 
 <script>
 //导入接口
-import {login} from '../api/http';
+import { login } from "../api/http";
 export default {
   name: "login",
   //数据
@@ -31,39 +31,49 @@ export default {
       rules: {
         username: [
           { required: true, message: "请输入用户账户", trigger: "blur" },
-          { min: 3, max: 12, message: "长度在 3 到 12 个数字和字母", trigger: "change" }
+          {
+            min: 3,
+            max: 12,
+            message: "长度在 3 到 12 个数字和字母",
+            trigger: "change"
+          }
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          { min: 6, max: 12, message: "长度在 6 到 12 个数字和字母", trigger: "change" }
+          {
+            min: 6,
+            max: 12,
+            message: "长度在 6 到 12 个数字和字母",
+            trigger: "change"
+          }
         ]
       }
     };
   },
   //方法
   methods: {
-      //登录
-      submit(){
-         //非空判断
-         if(this.formLogin.username == '' || this.formLogin.password == ''){
-             return this.$message.error('用户名和密码不能为空,请重新输入!')
-         }
-         //登录请求
-         login(this.formLogin).then(backData => {
-             if(backData.data.meta.status == 200){
-                 //登录成功
-                 this.$message.success(backData.data.meta.msg);
-                 //跳转到后台主页
-                 this.$router.push('/index');
-                 //存储token
-                 window.sessionStorage.setItem('token',backData.data.data.token)
-             }else{
-                 //登录失败
-                 this.$message.error(backData.data.meta.msg)
-             }
-         })
+    //登录
+    submit() {
+      //非空判断
+      if (this.formLogin.username == "" || this.formLogin.password == "") {
+        return this.$message.error("用户名和密码不能为空,请重新输入!");
       }
-  },
+      //登录请求
+      login(this.formLogin).then(backData => {
+        if (backData.data.meta.status == 200) {
+          //登录成功
+          this.$message.success(backData.data.meta.msg);
+          //存储token
+          window.sessionStorage.setItem("token", backData.data.data.token);
+          //跳转到后台主页
+          this.$router.push("/index");
+        } else {
+          //登录失败
+          this.$message.error(backData.data.meta.msg);
+        }
+      });
+    }
+  }
 };
 </script>
 
