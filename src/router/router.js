@@ -15,6 +15,7 @@ import roles from '../views/roles.vue';
 import rights from '../views/rights.vue';
 import goods from '../views/goods.vue';
 import params from '../views/params.vue';
+import categories from '../views/categories.vue';
 
 //路由规则
 const routes = [
@@ -60,6 +61,11 @@ const routes = [
             {
                 path: 'params',
                 component: params,
+            },
+            //商品分类
+            {
+                path: 'categories',
+                component: categories,
             },
         ]
     }
