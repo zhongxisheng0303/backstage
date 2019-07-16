@@ -9,6 +9,9 @@ Vue.use(VueRouter)
 import login from '../views/login.vue';
 import index from '../views/index.vue';
 
+//导入嵌套路由
+import user from '../components/user.vue';
+
 //路由规则
 const routes = [
     //重定向
@@ -26,8 +29,17 @@ const routes = [
         path: '/index',
         component: index,
         //路由原信息
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true },
+        //嵌套路由
+        children: [
+            //用户列表
+            {
+                path: 'users',
+                component: user,
+            }
+        ]
     }
+
 ];
 
 //实例路由

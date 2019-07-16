@@ -10,13 +10,13 @@
           </div>
         </el-col>
         <!-- 标题 -->
-        <el-col :span="19">
+        <el-col :span="18">
           <div class="grid-content bg-purple-light">
             <h2>某哔哩后台管理系统</h2>
           </div>
         </el-col>
         <!-- 退出 -->
-        <el-col :span="1">
+        <el-col :span="2">
           <div class="grid-content bg-purple">
             <a href="#" style="color:#000;" @click.prevent="logout">退出</a>
           </div>
@@ -28,49 +28,44 @@
       <!-- 侧边导航条 -->
       <el-aside width="200px" class="my-aside">
         <!-- 侧边导航条 -->
-        <el-menu default-active="2" class="el-menu-vertical-demo" :unique-opened="true">
-          <el-submenu index="1">
+        <el-menu default-active="2" class="el-menu-vertical-demo" :unique-opened="true" :router="true">
+          <el-submenu v-for="(item,index) in menusList" :index="(index + 1).toString()">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>导航一</span>
+              <span>{{ item.authName }}</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="1-1">
-                <i class="el-icon-menu"></i>选项1
-              </el-menu-item>
-              <el-menu-item index="1-2">
-                <i class="el-icon-menu"></i>选项2
-              </el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>导航二</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="2-1">
-                <i class="el-icon-menu"></i>选项1
-              </el-menu-item>
-              <el-menu-item index="2-2">
-                <i class="el-icon-menu"></i>选项2
+              <el-menu-item
+                v-for="(items,index) in menusList[index].children"
+                :index="'index/'+items.path"
+              >
+                <i class="el-icon-menu"></i>
+                {{ items.authName }}
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
         </el-menu>
       </el-aside>
       <!-- 核心内容 -->
-      <el-main class="my-main"></el-main>
+      <el-main class="my-main">
+        <!-- 内容出口 -->
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
+//导入菜单权限
+import { menus } from "../api/http";
 export default {
   name: "index",
   //数据
   data() {
-    return {};
+    return {
+      //菜单权限
+      menusList: []
+    };
   },
   //方法
   methods: {
@@ -83,9 +78,9 @@ export default {
       })
         .then(() => {
           //删除token
-          window.sessionStorage.removeItem('token');
+          window.sessionStorage.removeItem("token");
           //跳转到登录页
-          this.$router.push('/login');
+          this.$router.push("/login");
           this.$message({
             type: "success",
             message: "退出成功!"
@@ -98,6 +93,13 @@ export default {
           });
         });
     }
+  },
+  //生命钩子
+  created() {
+    //请求菜单权限
+    menus().then(backData => {
+      this.menusList = backData.data.data;
+    });
   }
 };
 </script>
@@ -123,6 +125,7 @@ export default {
     }
     //核心内容
     .my-main {
+      padding: 0px 20px;
       height: 100%;
       background-color: #e9eef3;
     }

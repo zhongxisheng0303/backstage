@@ -13,4 +13,12 @@ export const login = ({ username, password }) => {
         username,
         password
     })
-}
+};
+//暴露接口 --菜单权限
+export const menus = () => {
+    return backstage.get('menus',{
+        headers: {
+            Authorization:window.sessionStorage.getItem('token'),
+        }
+    })
+};

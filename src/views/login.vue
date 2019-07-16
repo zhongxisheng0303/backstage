@@ -1,5 +1,7 @@
 <template>
+  <!-- 大盒子 -->
   <div class="longin-box">
+    <!-- 登录盒子 -->
     <div class="login">
       <h2>用户登录</h2>
       <el-form
@@ -15,7 +17,7 @@
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="formLogin.password"></el-input>
         </el-form-item>
-        <el-button type="primary" class="submit" @click.prevent="submit('formLogin')">登录</el-button>
+        <el-button type="primary" class="submit" @click="submit('formLogin')">登录</el-button>
       </el-form>
     </div>
   </div>
@@ -41,7 +43,7 @@ export default {
             min: 3,
             max: 12,
             message: "长度在 3 到 12 个数字和字母",
-            trigger: "change"
+            trigger: "blur"
           }
         ],
         password: [
@@ -50,7 +52,7 @@ export default {
             min: 6,
             max: 12,
             message: "长度在 6 到 12 个数字和字母",
-            trigger: "change"
+            trigger: "blur"
           }
         ]
       }
@@ -61,6 +63,7 @@ export default {
     //登录
     submit(formName) {
       this.$refs[formName].validate(valid => {
+        //输入框是否为空
         if (valid) {
           //登录请求
           login(this.formLogin).then(backData => {
@@ -77,6 +80,7 @@ export default {
             }
           });
         } else {
+          //为空什么都不做
           return false;
         }
       });
