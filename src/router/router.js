@@ -13,6 +13,7 @@ import index from '../views/index.vue';
 import users from '../views/users.vue';
 import roles from '../views/roles.vue';
 import rights from '../views/rights.vue';
+import goods from '../views/goods.vue';
 
 //路由规则
 const routes = [
@@ -48,6 +49,11 @@ const routes = [
             {
                 path: 'rights',
                 component: rights,
+            },
+            //商品列表
+            {
+                path: 'goods',
+                component: goods,
             },
         ]
     }
