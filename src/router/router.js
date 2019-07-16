@@ -17,6 +17,7 @@ import goods from '../views/goods.vue';
 import params from '../views/params.vue';
 import categories from '../views/categories.vue';
 import orders from '../views/orders.vue';
+import reports from '../views/reports.vue';
 
 //路由规则
 const routes = [
@@ -72,6 +73,11 @@ const routes = [
             {
                 path: 'orders',
                 component: orders,
+            },
+            //数据统计
+            {
+                path: 'reports',
+                component: reports,
             },
         ]
     }
