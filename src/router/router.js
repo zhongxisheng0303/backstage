@@ -14,6 +14,7 @@ import users from '../views/users.vue';
 import roles from '../views/roles.vue';
 import rights from '../views/rights.vue';
 import goods from '../views/goods.vue';
+import params from '../views/params.vue';
 
 //路由规则
 const routes = [
@@ -54,6 +55,11 @@ const routes = [
             {
                 path: 'goods',
                 component: goods,
+            },
+            //分类参数
+            {
+                path: 'params',
+                component: params,
             },
         ]
     }
