@@ -3,7 +3,7 @@
     <!-- 面包屑 -->
     <mybread nav1="订单管理" nav2="订单列表"></mybread>
     <!-- table表格 -->
-    <el-table :data="tableData" border style="width: 100%">
+    <el-table :data="tableData" border style="width: 100%;margin-top:5px;">
       <el-table-column prop="date" label="日期" width="180"></el-table-column>
       <el-table-column prop="name" label="姓名" width="180"></el-table-column>
       <el-table-column prop="address" label="地址"></el-table-column>
@@ -64,7 +64,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.my-search {
-  margin: 5px 0;
-}
 </style>
