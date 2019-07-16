@@ -6,6 +6,11 @@ Vue.config.productionTip = false
 //导入全局样式
 import './assets/css/reset.css';
 
+//导入组件
+import mybread from './components/mybread.vue';
+//注册组件
+Vue.component('mybread',mybread);
+
 //导入element
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';

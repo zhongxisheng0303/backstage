@@ -1,11 +1,7 @@
 <template>
   <div>
     <!-- 面包屑 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right" class="my-bread">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
+    <mybread nav1="用户管理" nav2="用户列表"></mybread>
     <!-- 输入框 按钮 -->
     <el-row class="my-search">
       <!-- 输入框 -->
@@ -83,12 +79,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.my-bread {
-  height: 40px;
-  line-height: 40px;
-  background-color: #d3dce6;
-  padding-left: 10px;
-}
 .my-search {
   margin: 5px 0;
 }
