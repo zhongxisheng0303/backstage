@@ -34,8 +34,6 @@ export default {
   //数据
   data() {
     return {
-      //输入框内容
-      input3: "",
       //表格内容
       tableData: [
         {
