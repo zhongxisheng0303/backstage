@@ -5,7 +5,9 @@ import axios from 'axios';
 const backstage = axios.create({
     //设置基地址
     baseURL: 'http://localhost:8888/api/private/v1/',
-})
+});
+
+//axios的拦截器
 
 //暴露接口 --登录
 export const login = ({ username, password }) => {

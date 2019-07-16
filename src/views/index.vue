@@ -28,7 +28,7 @@
       <!-- 侧边导航条 -->
       <el-aside width="200px" class="my-aside">
         <!-- 侧边导航条 -->
-        <el-menu default-active="2" class="el-menu-vertical-demo" :unique-opened="true" :router="true">
+        <el-menu default-active="2" class="el-menu-vertical-demo my-menus" :unique-opened="true" :router="true">
           <el-submenu v-for="(item,index) in menusList" :index="(index + 1).toString()">
             <template slot="title">
               <i class="el-icon-location"></i>
@@ -37,7 +37,7 @@
             <el-menu-item-group>
               <el-menu-item
                 v-for="(items,index) in menusList[index].children"
-                :index="'index/'+items.path"
+                :index="'/index/'+items.path"
               >
                 <i class="el-icon-menu"></i>
                 {{ items.authName }}
@@ -122,6 +122,9 @@ export default {
     .my-aside {
       height: 100%;
       background-color: #fff;
+      .my-menus{
+        border:0px;
+      }
     }
     //核心内容
     .my-main {
