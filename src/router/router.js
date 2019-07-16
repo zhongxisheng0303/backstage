@@ -11,6 +11,7 @@ import index from '../views/index.vue';
 
 //导入嵌套路由
 import users from '../views/users.vue';
+import roles from '../views/roles.vue';
 
 //路由规则
 const routes = [
@@ -36,6 +37,11 @@ const routes = [
             {
                 path: 'users',
                 component: users,
+            },
+            //角色列表
+            {
+                path: 'roles',
+                component: roles,
             }
         ]
     }
