@@ -12,6 +12,7 @@ import index from '../views/index.vue';
 //导入嵌套路由
 import users from '../views/users.vue';
 import roles from '../views/roles.vue';
+import rights from '../views/rights.vue';
 
 //路由规则
 const routes = [
@@ -42,7 +43,12 @@ const routes = [
             {
                 path: 'roles',
                 component: roles,
-            }
+            },
+            //权限列表
+            {
+                path: 'rights',
+                component: rights,
+            },
         ]
     }
 
