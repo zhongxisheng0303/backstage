@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  name: "users",
+  name: "orders",
   //数据
   data() {
     return {
