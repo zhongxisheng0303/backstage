@@ -30,7 +30,7 @@ backstage.interceptors.request.use(function (config) {
 backstage.interceptors.response.use(function (response) {
     // 做一些响应回来后做的事情
     //判断是否是有效的token
-    if(response.data.meta.status == 400 || response.data.meta.msg == "无效token"){
+    if (response.data.meta.status == 400 || response.data.meta.msg == "无效token") {
         //无效删除伪造token
         window.sessionStorage.clear();
         //回到登录页
@@ -56,8 +56,8 @@ export const menus = () => {
     return backstage.get('menus')
 };
 //暴露接口 --获取用户
-export const users = (pagenum,pagesize) =>{
-    return backstage.get('users',{
+export const users = (pagenum, pagesize) => {
+    return backstage.get('users', {
         params: {
             pagenum,
             pagesize,
@@ -65,8 +65,8 @@ export const users = (pagenum,pagesize) =>{
     })
 };
 //暴露接口 --添加用户
-export const adduser = ({username,password,email,mobile}) => {
-    return backstage.post('users',{
+export const adduser = ({ username, password, email, mobile }) => {
+    return backstage.post('users', {
         username,
         password,
         email,
@@ -74,7 +74,7 @@ export const adduser = ({username,password,email,mobile}) => {
     })
 };
 //暴露接口 --用户状态
-export const userstate = (uId,type) => {
+export const userstate = (uId, type) => {
     return backstage.put(`users/${uId}/state/${type}`)
 };
 //暴露接口 --根据id获取用户
@@ -82,9 +82,13 @@ export const getuser = (id) => {
     return backstage.get(`users/${id}`)
 };
 //暴露接口 --修改用户
-export const amenduser = ({id,email,mobile}) => {
-    return backstage.put(`users/${id}`,{
+export const amenduser = ({ id, email, mobile }) => {
+    return backstage.put(`users/${id}`, {
         email,
         mobile
     })
+};
+//暴露接口 --删除用户
+export const removeuser = (id) => {
+    return backstage.delete(`users/${id}`);
 }

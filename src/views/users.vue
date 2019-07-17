@@ -80,7 +80,13 @@
             @click="getIdUsers(scope.row.id)"
           ></el-button>
           <!-- 删除用户 -->
-          <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            plain
+            @click="deleteuser(scope.row.id)"
+          ></el-button>
           <!-- 分配角色 -->
           <el-button type="success" icon="el-icon-check" size="mini" plain></el-button>
         </template>
@@ -120,7 +126,14 @@
 
 <script>
 //导入axios
-import { users, adduser, userstate, getuser, amenduser } from "../api/http";
+import {
+  users,
+  adduser,
+  userstate,
+  getuser,
+  amenduser,
+  removeuser
+} from "../api/http";
 import loginVue from "./login.vue";
 export default {
   name: "users",
@@ -268,15 +281,42 @@ export default {
       };
       //请求修改用户
       amenduser(alterRear).then(backData => {
-        if(backData.data.meta.status == 200){
-          this.$message.success('修改成功!');
+        if (backData.data.meta.status == 200) {
+          this.$message.success("修改成功!");
           this.alterForm = false;
           //重新获取用户
           this.getusers();
-        }else{
-          this.$message.error('修改失败!')
+        } else {
+          this.$message.error("修改失败!");
         }
+      });
+    },
+    //删除用户
+    deleteuser(id) {
+      this.$confirm("此操作将永久删除用户, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
+        .then(() => {
+          //请求删除用户
+          removeuser(id).then(backData => {
+            if ((backData.data, meta.status == 200)) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+            }else{
+              this.$message.error('删除失败!')
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
   },
   //生命钩子
