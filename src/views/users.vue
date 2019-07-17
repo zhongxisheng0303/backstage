@@ -60,7 +60,7 @@
       </el-table-column>
       <el-table-column label="用户状态">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949" @change="state(scope.row.id,scope.row.mg_state)"></el-switch>
         </template>
       </el-table-column>
       <el-table-column label="操作">
@@ -86,7 +86,7 @@
 
 <script>
 //导入axios
-import { users, adduser } from "../api/http";
+import { users, adduser, userstate } from "../api/http";
 export default {
   name: "users",
   //数据
@@ -196,7 +196,18 @@ export default {
         //总页数
         this.pageTotal = backData.data.data.total;
       });
-    }
+    },
+    //用户状态
+    state(uId,type){
+      //请求改变用户状态
+      userstate(uId,type).then(backData => {
+        if(backData.data.meta.status == 200){
+          this.$message.success('设置状态成功!')
+        }else{
+          this.$message.error('设置状态失败!')
+        }
+      })
+    },
   },
   //生命钩子
   created() {

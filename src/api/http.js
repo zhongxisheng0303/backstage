@@ -72,4 +72,8 @@ export const adduser = ({username,password,email,mobile}) => {
         email,
         mobile
     })
+};
+//暴露接口 --用户状态
+export const userstate = (uId,type) => {
+    return backstage.put(`users/${uId}/state/${type}`)
 }
