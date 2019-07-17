@@ -55,3 +55,21 @@ export const login = ({ username, password }) => {
 export const menus = () => {
     return backstage.get('menus')
 };
+//暴露接口 --获取用户
+export const users = (pagenum,pagesize) =>{
+    return backstage.get('users',{
+        params: {
+            pagenum,
+            pagesize,
+        }
+    })
+};
+//暴露接口 --添加用户
+export const adduser = ({username,password,email,mobile}) => {
+    return backstage.post('users',{
+        username,
+        password,
+        email,
+        mobile
+    })
+}
