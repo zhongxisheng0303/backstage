@@ -11,44 +11,37 @@
     </el-row>
     <!-- table表格 -->
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column prop="date" label="日期" width="180"></el-table-column>
-      <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
+      <el-table-column label="" width="35">
+        <template slot-scope="scope">
+          <i class="el-icon-arrow-right"></i>
+        </template>
+      </el-table-column>
+      <el-table-column type="index" width="35"></el-table-column>
+      <el-table-column prop="roleName" label="角色名称"></el-table-column>
+      <el-table-column prop="roleDesc" label="角色描述"></el-table-column>
+      <el-table-column label="操作"></el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
+import { roleList } from '../api/http';
 export default {
   name: "roles",
   //数据
   data() {
     return {
       //表格内容
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ]
+      tableData: []
     };
-  }
+  },
+  //生命钩子
+  created() {
+    //获取角色
+    roleList().then(backData => {
+      this.tableData = backData.data.data;
+    })
+  },
 };
 </script>
 
