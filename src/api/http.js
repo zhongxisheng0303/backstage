@@ -91,4 +91,8 @@ export const amenduser = ({ id, email, mobile }) => {
 //暴露接口 --删除用户
 export const removeuser = (id) => {
     return backstage.delete(`users/${id}`);
+};
+//暴露接口 --角色列表
+export const roleList = () => {
+    return backstage.get('roles')
 }

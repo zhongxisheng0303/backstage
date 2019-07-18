@@ -15,19 +15,19 @@
         <el-button type="success" plain @click.prevent="dialogFormVisible = true">添加用户</el-button>
       </el-col>
     </el-row>
-    <!-- 添加用户表单 -->
+    <!-- 添加用户表单弹框 -->
     <el-dialog title="添加用户" :visible.sync="dialogFormVisible" @close="close('form')">
       <el-form :model="form" :rules="rules" ref="form">
-        <el-form-item label="用户名" :label-width="formLabelWidth" prop="username">
+        <el-form-item label="用户名" label-width="120px" prop="username">
           <el-input type="text" v-model="form.username" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
+        <el-form-item label="密码" label-width="120px" prop="password">
           <el-input type="password" v-model="form.password" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
+        <el-form-item label="邮箱" label-width="120px" prop="email">
           <el-input v-model="form.email" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="电话" :label-width="formLabelWidth" prop="mobile">
+        <el-form-item label="电话" label-width="120px" prop="mobile">
           <el-input v-model="form.mobile" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
@@ -77,7 +77,7 @@
             size="mini"
             plain
             class="my-btn"
-            @click="getIdUsers(scope.row.id)"
+            @click="getIdUsers(scope.row)"
           ></el-button>
           <!-- 删除用户 -->
           <el-button
@@ -88,27 +88,47 @@
             @click="deleteuser(scope.row.id)"
           ></el-button>
           <!-- 分配角色 -->
-          <el-button type="success" icon="el-icon-check" size="mini" plain></el-button>
+          <el-button
+            type="success"
+            icon="el-icon-check"
+            size="mini"
+            plain
+            @click="allotrole(scope.row)"
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- 修改用户 -->
-    <el-dialog title="修改用户" :visible.sync="alterForm" @close="close('form')">
-      <el-form :model="form" :rules="rules" ref="form">
-        <el-input type="hidden" v-model="form.id" autocomplete="off" :disabled="true"></el-input>
-        <el-form-item label="用户名" :label-width="formLabelWidth">
-          <el-input v-model="form.username" autocomplete="off" :disabled="true"></el-input>
+    <!-- 修改用户弹框 -->
+    <el-dialog title="修改用户" :visible.sync="alterForm" @close="close('editform')">
+      <el-form :model="editform" :rules="rules" ref="editform">
+        <el-form-item label="用户名" label-width="120px">
+          <el-input v-model="editform.username" autocomplete="off" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
-          <el-input v-model="form.email" autocomplete="off"></el-input>
+        <el-form-item label="邮箱" label-width="120px" prop="email">
+          <el-input v-model="editform.email" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="电话" :label-width="formLabelWidth" prop="mobile">
-          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        <el-form-item label="电话" label-width="120px" prop="mobile">
+          <el-input v-model="editform.mobile" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="alterForm = false">取 消</el-button>
         <el-button type="primary" @click="amend">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 分配角色弹框 -->
+    <el-dialog title="分配角色" :visible.sync="allotRole">
+      <el-form>
+        <el-form-item label="当前用户" label-width="120px"></el-form-item>
+        <el-form-item label="请选择角色" label-width="120px">
+          <el-select v-model="value" placeholder="请选择角色">
+            <el-option v-for="item in roles" :label="item.roleName" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="allotRole = false">取 消</el-button>
+        <el-button type="primary" @click="allot">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 分页 -->
@@ -132,7 +152,8 @@ import {
   userstate,
   getuser,
   amenduser,
-  removeuser
+  removeuser,
+  roleList
 } from "../api/http";
 import loginVue from "./login.vue";
 export default {
@@ -152,18 +173,13 @@ export default {
       pageTotal: 0,
       //显示添加表单
       dialogFormVisible: false,
-      //显示修改表单
-      alterForm: false,
       //表单的内容
       form: {
-        id: "",
         username: "",
         password: "",
         email: "",
         mobile: ""
       },
-      //输入框宽度
-      formLabelWidth: "120px",
       //判断输入框内容
       rules: {
         username: [
@@ -211,7 +227,22 @@ export default {
             trigger: "change"
           }
         ]
-      }
+      },
+      //显示修改表单
+      alterForm: false,
+      //修改用户数据
+      editform:{
+        username: '',
+        email: '',
+        mobile: '',
+        id: '',
+      },
+      //显示分配角色
+      allotRole: false,
+      //角色内容
+      roles: [],
+      //下拉框数据
+      value: "",
     };
   },
   //方法
@@ -225,9 +256,13 @@ export default {
         if (valid) {
           //添加用户
           adduser(this.form).then(backData => {
-            this.dialogFormVisible = false;
-            //重新获取用户
-            this.getusers();
+            if (backData.data.meta.status == 201) {
+              //隐藏添加用户弹框
+              this.dialogFormVisible = false;
+              this.$message.success("添加用户成功!");
+              //重新获取用户
+              this.getusers();
+            }
           });
         } else {
           return false;
@@ -254,38 +289,33 @@ export default {
         }
       });
     },
-    //根据id获取用户
-    getIdUsers(id) {
+    //修改用户弹框
+    getIdUsers(row) {
+      //将每一项数据给弹框
+      this.editform = row;
+      //显示用户弹框
       this.alterForm = true;
-      //根据id获取用户
-      getuser(id).then(backData => {
-        this.form.id = backData.data.data.id;
-        this.form.username = backData.data.data.username;
-        this.form.email = backData.data.data.email;
-        this.form.mobile = backData.data.data.mobile;
-      });
     },
     //弹框关闭
     close(formName) {
-      //输入框清空
+      //输入框还原
       this.$refs[formName].resetFields();
-      this.form.username = "";
+   
     },
     //修改用户
     amend() {
       //声明一个对象
       const alterRear = {
-        id: this.form.id,
-        email: this.form.email,
-        mobile: this.form.mobile
+        id: this.editform.id,
+        email: this.editform.email,
+        mobile: this.editform.mobile
       };
       //请求修改用户
       amenduser(alterRear).then(backData => {
         if (backData.data.meta.status == 200) {
           this.$message.success("修改成功!");
+          //隐藏修改用户弹框
           this.alterForm = false;
-          //重新获取用户
-          this.getusers();
         } else {
           this.$message.error("修改失败!");
         }
@@ -301,23 +331,38 @@ export default {
         .then(() => {
           //请求删除用户
           removeuser(id).then(backData => {
-            if ((backData.data, meta.status == 200)) {
+            if (backData.data.meta.status == 200) {
+              //重新获取用户信息
+              this.getusers();
               this.$message({
                 type: "success",
                 message: "删除成功!"
               });
-            }else{
-              this.$message.error('删除失败!')
+            } else {
+              this.$message.error("删除失败!");
             }
           });
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "已取消删除!"
           });
         });
-    }
+    },
+    //角色分配弹框
+    allotrole(user) {
+      //请求获取角色
+      roleList().then(backData => {
+        this.roles = backData.data.data;
+      });
+      //获取点击那一项的数据
+      this.nowuser = user;
+      //显示分配框
+      this.allotRole = true;
+    },
+    //分配角色
+    allot(row) {}
   },
   //生命钩子
   created() {
