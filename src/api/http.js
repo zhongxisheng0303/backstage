@@ -111,4 +111,8 @@ export const sureEditRole = ({id,roleName,roleDesc}) => {
         roleName,
         roleDesc,
     })
+};
+//暴露接口 --删除角色
+export const deleterole = ({id}) => {
+    return backstage.delete(`roles/${id}`)
 }

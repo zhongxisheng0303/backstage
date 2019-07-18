@@ -30,7 +30,13 @@
             @click="showRole(scope.row)"
           ></el-button>
           <!-- 删除角色 -->
-          <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            plain
+            @click="deleteRole(scope.row)"
+          ></el-button>
           <!-- 权限分配 -->
           <el-button type="success" icon="el-icon-check" size="mini" plain></el-button>
         </template>
@@ -70,7 +76,7 @@
 </template>
 
 <script>
-import { roleList, appendRole, sureEditRole } from "../api/http";
+import { roleList, appendRole, sureEditRole, deleterole } from "../api/http";
 export default {
   name: "roles",
   //数据
@@ -152,22 +158,45 @@ export default {
       this.editRoleHide = true;
     },
     //确定编辑角色
-    sureEdit(){
+    sureEdit() {
       const role = {
         id: this.editrole.id,
         roleName: this.editrole.roleName,
-        roleDesc: this.editrole.roleDesc,
-      }
+        roleDesc: this.editrole.roleDesc
+      };
       //请求编辑角色
       sureEditRole(role).then(backData => {
-        if(backData.data.meta.status == 200){
-          this.$message.success('编辑角色成功!');
+        if (backData.data.meta.status == 200) {
+          this.$message.success("编辑角色成功!");
           //隐藏弹框
           this.editRoleHide = false;
-        }else{
-          this.$message.error('编辑角色失败!');
+        } else {
+          this.$message.error("编辑角色失败!");
         }
+      });
+    },
+    //删除角色
+    deleteRole(row) {
+      this.$confirm("此操作将永久删除该角色, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
+        .then(() => {
+          //请求删除角色
+          deleterole({id:row.id}).then(backData => {
+            if(backData.data.meta.status == 200){
+              this.$message.success('删除成功!')
+              //重新获取角色
+              this.getRole();
+            }else{
+              this.$message.error('删除失败!')
+            }
+          })
+        })
+        .catch(() => {
+          this.$message('已取消删除!')
+        });
     }
   },
   //生命钩子
