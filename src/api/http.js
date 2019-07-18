@@ -4,9 +4,6 @@ import axios from 'axios';
 //导入router
 import router from '../router/router';
 
-//导入vue
-import Vue from 'vue';
-
 //创建axios
 const backstage = axios.create({
     //设置基地址
@@ -35,8 +32,6 @@ backstage.interceptors.response.use(function (response) {
         window.sessionStorage.clear();
         //回到登录页
         router.push('/login');
-        //警告
-        new Vue().$message.error('请勿干一些骚操作,老老实实登录!')
     }
     return response;
 }, function (error) {
@@ -96,4 +91,10 @@ export const removeuser = (id) => {
 //暴露接口 --角色列表
 export const roleList = () => {
     return backstage.get('roles')
+};
+//暴露接口 --角色分配
+export const allotpart = ({id,rid}) => {
+    return backstage.put(`users/${id}/role`,{
+        rid,
+    })
 }

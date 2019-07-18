@@ -119,9 +119,9 @@
     <!-- 分配角色弹框 -->
     <el-dialog title="分配角色" :visible.sync="allotRole">
       <el-form>
-        <el-form-item label="当前用户" label-width="120px"></el-form-item>
+        <el-form-item label="当前用户" label-width="120px">{{ allotuser.username }}</el-form-item>
         <el-form-item label="请选择角色" label-width="120px">
-          <el-select v-model="value" placeholder="请选择角色">
+          <el-select v-model="allotuser.value" placeholder="请选择角色">
             <el-option v-for="item in roles" :label="item.roleName" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -153,7 +153,8 @@ import {
   getuser,
   amenduser,
   removeuser,
-  roleList
+  roleList,
+  allotpart
 } from "../api/http";
 import loginVue from "./login.vue";
 export default {
@@ -242,7 +243,11 @@ export default {
       //角色内容
       roles: [],
       //下拉框数据
-      value: "",
+      allotuser:{
+        id: '',
+        value: '',
+        username: '',
+      }
     };
   },
   //方法
@@ -364,11 +369,36 @@ export default {
       roleList().then(backData => {
         this.roles = backData.data.data;
       });
+      //将角色和用户名添加
+      this.allotuser.value = row.role_name;
+      this.allotuser.id = row.id;
+      this.allotuser.username = row.username;
       //显示分配框
       this.allotRole = true;
     },
     //分配角色
-    allot(row) {}
+    allot() {
+      const role = {
+        id:this.allotuser.id,
+        rid:this.allotuser.value
+      }
+      //请求分配角色
+      allotpart(role).then(backData => {
+        if(backData.data.meta.status == 200){
+          //隐藏分配框
+          this.allotRole = false;
+          //成功提示
+          this.$message.success('分配角色成功!');
+          //重新获取用户
+          this.getusers();
+        }else{
+          //隐藏分配框
+          this.allotRole = false;
+          //成功提示
+          this.$message.error('分配角色失败!')
+        }
+      })
+    }
   },
   //生命钩子
   created() {
