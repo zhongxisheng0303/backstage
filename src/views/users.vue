@@ -248,8 +248,16 @@ export default {
   //方法
   methods: {
     //分页方法
-    handleSizeChange() {},
-    handleCurrentChange() {},
+    handleSizeChange(size) {
+      this.pagesize = size;
+      //重新获取用户
+      this.getusers();
+    },
+    handleCurrentChange(current) {
+      this.pagenum = current;
+      //重新获取用户
+      this.getusers();
+    },
     //确定添加用户
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
