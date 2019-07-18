@@ -56,9 +56,10 @@ export const menus = () => {
     return backstage.get('menus')
 };
 //暴露接口 --获取用户
-export const users = (pagenum, pagesize) => {
+export const users = (query,pagenum, pagesize) => {
     return backstage.get('users', {
         params: {
+            query,
             pagenum,
             pagesize,
         }

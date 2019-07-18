@@ -6,8 +6,8 @@
     <el-row class="my-search">
       <!-- 输入框 -->
       <el-col :span="5">
-        <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input placeholder="请输入内容" v-model="query" @keyup.enter.native="getusers" class="input-with-select">
+          <el-button slot="append" icon="el-icon-search" @click="getusers"></el-button>
         </el-input>
       </el-col>
       <!-- 按钮 -->
@@ -161,10 +161,10 @@ export default {
   //数据
   data() {
     return {
-      //输入框内容
-      input3: "",
       //表格内容
       tableData: [],
+      //输入框内容
+      query: '',
       //当前页
       pagenum: 1,
       //页容量
@@ -271,7 +271,7 @@ export default {
     },
     //获取用户
     getusers() {
-      users(this.pagenum, this.pagesize).then(backData => {
+      users(this.query,this.pagenum, this.pagesize).then(backData => {
         //用户信息
         this.tableData = backData.data.data.users;
         //总页数
@@ -351,13 +351,11 @@ export default {
         });
     },
     //角色分配弹框
-    allotrole(user) {
+    allotrole(row) {
       //请求获取角色
       roleList().then(backData => {
         this.roles = backData.data.data;
       });
-      //获取点击那一项的数据
-      this.nowuser = user;
       //显示分配框
       this.allotRole = true;
     },
