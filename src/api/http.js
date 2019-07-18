@@ -104,4 +104,11 @@ export const appendRole = ({roleName,roleDesc}) => {
         roleName,
         roleDesc,
     })
+};
+//暴露接口 --编辑角色   
+export const sureEditRole = ({id,roleName,roleDesc}) => {
+    return backstage.put(`roles/${id}`,{
+        roleName,
+        roleDesc,
+    })
 }

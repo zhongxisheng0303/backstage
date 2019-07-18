@@ -19,7 +19,22 @@
       <el-table-column type="index" width="35"></el-table-column>
       <el-table-column prop="roleName" label="角色名称"></el-table-column>
       <el-table-column prop="roleDesc" label="角色描述"></el-table-column>
-      <el-table-column label="操作"></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <!-- 修改角色 -->
+          <el-button
+            type="primary"
+            icon="el-icon-edit"
+            size="mini"
+            plain
+            @click="showRole(scope.row)"
+          ></el-button>
+          <!-- 删除角色 -->
+          <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
+          <!-- 权限分配 -->
+          <el-button type="success" icon="el-icon-check" size="mini" plain></el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <!-- 添加角色弹框 -->
     <el-dialog title="添加角色" :visible.sync="addRoleHide" @close="close('addrole')">
@@ -36,11 +51,26 @@
         <el-button type="primary" @click="sureRole('addrole')">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 编辑角色弹框 -->
+    <el-dialog title="编辑角色" :visible.sync="editRoleHide" @close="close">
+      <el-form :model="editrole" :rules="rules" ref="editrole">
+        <el-form-item label="角色名称" label-width="120px" prop="roleName">
+          <el-input v-model="editrole.roleName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述" label-width="120px" prop="roleDesc">
+          <el-input v-model="editrole.roleDesc" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editRoleHide = false">取 消</el-button>
+        <el-button type="primary" @click="sureEdit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { roleList, appendRole } from "../api/http";
+import { roleList, appendRole, sureEditRole } from "../api/http";
 export default {
   name: "roles",
   //数据
@@ -63,6 +93,14 @@ export default {
         roleDesc: [
           { required: true, message: "请输入角色描述", trigger: "blur" }
         ]
+      },
+      //编辑角色弹框隐藏
+      editRoleHide: false,
+      //编辑角色数据
+      editrole: {
+        roleName: "",
+        roleDesc: "",
+        id: ""
       }
     };
   },
@@ -87,7 +125,7 @@ export default {
               //隐藏弹框
               this.addRoleHide = false;
             } else {
-              this.$message.error('添加角色失败!');
+              this.$message.error("添加角色失败!");
               //隐藏弹框
               this.addRoleHide = false;
             }
@@ -99,8 +137,37 @@ export default {
     },
     //弹框关闭方法
     close(role) {
-      //还原输入框
-      this.$refs[role].resetFields();
+      if (role == undefined) {
+        //重新获取角色
+        this.getRole();
+      } else {
+        //还原输入框
+        this.$refs[role].resetFields();
+      }
+    },
+    //编辑角色弹框
+    showRole(row) {
+      this.editrole = row;
+      //显示弹框
+      this.editRoleHide = true;
+    },
+    //确定编辑角色
+    sureEdit(){
+      const role = {
+        id: this.editrole.id,
+        roleName: this.editrole.roleName,
+        roleDesc: this.editrole.roleDesc,
+      }
+      //请求编辑角色
+      sureEditRole(role).then(backData => {
+        if(backData.data.meta.status == 200){
+          this.$message.success('编辑角色成功!');
+          //隐藏弹框
+          this.editRoleHide = false;
+        }else{
+          this.$message.error('编辑角色失败!');
+        }
+      })
     }
   },
   //生命钩子
