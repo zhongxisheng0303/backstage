@@ -319,8 +319,8 @@ export default {
     //弹框关闭
     close(formName) {
       if (formName == undefined) {
-        //重新获取角色
-        this.getRole();
+        //重新获取用户
+        this.getusers();
       } else {
         //还原输入框
         this.$refs[formName].resetFields();
