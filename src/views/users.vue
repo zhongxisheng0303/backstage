@@ -6,7 +6,12 @@
     <el-row class="my-search">
       <!-- 输入框 -->
       <el-col :span="5">
-        <el-input placeholder="请输入内容" v-model="query" @keyup.enter.native="getusers" class="input-with-select">
+        <el-input
+          placeholder="请输入内容"
+          v-model="query"
+          @keyup.enter.native="getusers"
+          class="input-with-select"
+        >
           <el-button slot="append" icon="el-icon-search" @click="getusers"></el-button>
         </el-input>
       </el-col>
@@ -99,7 +104,7 @@
       </el-table-column>
     </el-table>
     <!-- 修改用户弹框 -->
-    <el-dialog title="修改用户" :visible.sync="alterForm" @close="close('editform')">
+    <el-dialog title="修改用户" :visible.sync="alterForm" @close="close">
       <el-form :model="editform" :rules="rules" ref="editform">
         <el-form-item label="用户名" label-width="120px">
           <el-input v-model="editform.username" autocomplete="off" :disabled="true"></el-input>
@@ -165,7 +170,7 @@ export default {
       //表格内容
       tableData: [],
       //输入框内容
-      query: '',
+      query: "",
       //当前页
       pagenum: 1,
       //页容量
@@ -232,21 +237,21 @@ export default {
       //显示修改表单
       alterForm: false,
       //修改用户数据
-      editform:{
-        username: '',
-        email: '',
-        mobile: '',
-        id: '',
+      editform: {
+        username: "",
+        email: "",
+        mobile: "",
+        id: ""
       },
       //显示分配角色
       allotRole: false,
       //角色内容
       roles: [],
       //下拉框数据
-      allotuser:{
-        id: '',
-        value: '',
-        username: '',
+      allotuser: {
+        id: "",
+        value: "",
+        username: ""
       }
     };
   },
@@ -270,11 +275,13 @@ export default {
           //添加用户
           adduser(this.form).then(backData => {
             if (backData.data.meta.status == 201) {
+              this.$message.success("添加用户成功!");
               //隐藏添加用户弹框
               this.dialogFormVisible = false;
-              this.$message.success("添加用户成功!");
-              //重新获取用户
-              this.getusers();
+            } else {
+              this.$message.error("添加用户失败!");
+              //隐藏添加用户弹框
+              this.dialogFormVisible = false;
             }
           });
         } else {
@@ -284,7 +291,7 @@ export default {
     },
     //获取用户
     getusers() {
-      users(this.query,this.pagenum, this.pagesize).then(backData => {
+      users(this.query, this.pagenum, this.pagesize).then(backData => {
         //用户信息
         this.tableData = backData.data.data.users;
         //总页数
@@ -311,9 +318,13 @@ export default {
     },
     //弹框关闭
     close(formName) {
-      //输入框还原
-      this.$refs[formName].resetFields();
-   
+      if (formName == undefined) {
+        //重新获取角色
+        this.getRole();
+      } else {
+        //还原输入框
+        this.$refs[formName].resetFields();
+      }
     },
     //修改用户
     amend() {
@@ -331,6 +342,8 @@ export default {
           this.alterForm = false;
         } else {
           this.$message.error("修改失败!");
+          //隐藏修改用户弹框
+          this.alterForm = false;
         }
       });
     },
@@ -379,25 +392,25 @@ export default {
     //分配角色
     allot() {
       const role = {
-        id:this.allotuser.id,
-        rid:this.allotuser.value
-      }
+        id: this.allotuser.id,
+        rid: this.allotuser.value
+      };
       //请求分配角色
       allotpart(role).then(backData => {
-        if(backData.data.meta.status == 200){
+        if (backData.data.meta.status == 200) {
           //隐藏分配框
           this.allotRole = false;
           //成功提示
-          this.$message.success('分配角色成功!');
+          this.$message.success("分配角色成功!");
           //重新获取用户
           this.getusers();
-        }else{
+        } else {
           //隐藏分配框
           this.allotRole = false;
           //成功提示
-          this.$message.error('分配角色失败!')
+          this.$message.error("分配角色失败!");
         }
-      })
+      });
     }
   },
   //生命钩子
