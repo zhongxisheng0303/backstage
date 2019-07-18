@@ -97,4 +97,11 @@ export const allotpart = ({id,rid}) => {
     return backstage.put(`users/${id}/role`,{
         rid,
     })
+};
+//暴露接口 --添加角色
+export const appendRole = ({roleName,roleDesc}) => {
+    return backstage.post('roles',{
+        roleName,
+        roleDesc,
+    })
 }
