@@ -393,6 +393,11 @@ export default {
     },
     //分配角色
     allot() {
+      if(typeof (this.allotuser.value) == "string"){
+        //隐藏分配弹框
+        this.allotRole = false;
+        return
+      }
       const role = {
         id: this.allotuser.id,
         rid: this.allotuser.value
