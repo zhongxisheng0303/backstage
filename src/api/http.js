@@ -119,4 +119,14 @@ export const deleterole = ({id}) => {
 //暴露接口 --删除指定的权限
 export const deleteRight = ({roleId,rightId}) => {
     return backstage.delete(`roles/${roleId}/rights/${rightId}`);
+};
+//暴露接口 --权限列表
+export const allRightList = () => {
+    return backstage.get('rights/tree')
+}
+//暴露接口 --角色授权
+export const roleAccredit = ({roleId,rids}) => {
+    return backstage.post(`roles/${roleId}/rights`,{
+        rids,
+    })
 }

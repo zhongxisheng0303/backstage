@@ -64,6 +64,7 @@
             size="mini"
             plain
             @click="showRole(scope.row)"
+            class="my-btn"
           ></el-button>
           <!-- 删除角色 -->
           <el-button
@@ -74,7 +75,13 @@
             @click="deleteRole(scope.row)"
           ></el-button>
           <!-- 权限分配 -->
-          <el-button type="success" icon="el-icon-check" size="mini" plain></el-button>
+          <el-button
+            type="success"
+            icon="el-icon-check"
+            size="mini"
+            plain
+            @click="allot(scope.row)"
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -108,11 +115,35 @@
         <el-button type="primary" @click="sureEdit">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 分配权限弹框 -->
+    <el-dialog title="权限分配" :visible.sync="allotRightHide">
+      <el-tree
+        :data="data"
+        show-checkbox
+        node-key="id"
+        ref="tree"
+        default-expand-all
+        :default-checked-keys="defaultRight"
+        :props="defaultProps"
+      ></el-tree>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="allotRightHide = false">取 消</el-button>
+        <el-button type="primary" @click="allocation">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { roleList, appendRole, sureEditRole, deleterole, deleteRight } from "../api/http";
+import {
+  roleList,
+  appendRole,
+  sureEditRole,
+  deleterole,
+  deleteRight,
+  allRightList,
+  roleAccredit
+} from "../api/http";
 export default {
   name: "roles",
   //数据
@@ -138,12 +169,22 @@ export default {
       },
       //编辑角色弹框隐藏
       editRoleHide: false,
-      //编辑角色数据
+      //角色数据
       editrole: {
         roleName: "",
         roleDesc: "",
         id: ""
-      }
+      },
+      //分配权限弹框隐藏
+      allotRightHide: false,
+      //分配权限数据
+      data: [],
+      defaultProps: {
+        children: "children",
+        label: "authName"
+      },
+      //默认已分配权限数据
+      defaultRight: []
     };
   },
   //方法
@@ -235,14 +276,81 @@ export default {
         });
     },
     //删除指定的权限
-    removeRight(role,right){
+    removeRight(role, right) {
       //请求删除
-      deleteRight({roleId:role.id,rightId:right.id}).then(backData => {
-        if(backData.data.meta.status == 200){
+      deleteRight({ roleId: role.id, rightId: right.id }).then(backData => {
+        if (backData.data.meta.status == 200) {
           //将返回来的权限数据重新旧数据
           role.children = backData.data.data;
           //成功
-          this.$message.success('取消权限成功!')
+          this.$message.success("取消权限成功!");
+        }
+      });
+    },
+    //分配权限弹框
+    allot(row) {
+      //声明一个空数组
+      let rightId = [];
+      //循环角色已有的权限id
+      // for (let i = 0; i < row.children.length; i++) {
+      //   // rightId.push(row.children[i].id);
+      //   const twoRight = row.children[i].children;
+      //   //循环第二级权限
+      //   for (let i = 0; i < twoRight.length; i++) {
+      //     // rightId.push(twoRight[i].id);
+      //     const threeRight = twoRight[i].children;
+      //     //循环第三级权限
+      //     for (let i = 0; i < threeRight.length; i++) {
+      //       rightId.push(threeRight[i].id);
+      //     }
+      //   }
+      // }
+      //递归方法
+      function forRightId(item){
+        //循环角色已有的权限id
+        for(let i = 0; i < item.length; i++){
+          if(item[i].children){
+            forRightId(item[i].children);
+          }else{
+            rightId.push(item[i].id)
+          }
+        }
+      };
+      //调用函数
+      forRightId(row.children)
+      //得到的id添加给默认已分配权限数据
+      this.defaultRight = rightId;
+      //请求获取权限列表
+      allRightList().then(backData => {
+        if (backData.data.meta.status == 200) {
+          //将获取到权限列表添加到权限数据
+          this.data = backData.data.data;
+        }
+      });
+      this.editrole = row
+      //显示弹框
+      this.allotRightHide = true;
+    },
+    //确定分配权限
+    allocation() {
+      //将获取到的id数组转换成用逗号隔开的字符串
+      const rids1 = this.$refs.tree.getHalfCheckedKeys().join(',');
+      const rids2 = this.$refs.tree.getCheckedKeys().join(',');
+      const rids = rids1+','+rids2;
+      //获取角色id
+      const roleId = this.editrole.id;
+      //请求角色授权
+      roleAccredit({roleId,rids}).then(backData => {
+        if(backData.data.meta.status == 200){
+          //成功
+          this.$message.success('角色授权成功!');
+          //重新获取角色
+          this.getRole()
+          //隐藏分配框
+          this.allotRightHide = false;
+        }else{
+          //失败
+          this.$message.error('角色授权失败!')
         }
       })
     }
@@ -262,5 +370,8 @@ export default {
 .my-tag {
   margin-left: 5px;
   margin-bottom: 5px;
+}
+.my-btn {
+  margin-left: 10px;
 }
 </style>
