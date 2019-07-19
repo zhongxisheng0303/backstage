@@ -43,7 +43,7 @@
     </el-dialog>
     <!-- table表格 -->
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column label="#" width="30">
+      <el-table-column label="#" width="50">
         <template slot-scope="scope">
           <span>{{ scope.$index+1 }}</span>
         </template>
@@ -278,6 +278,8 @@ export default {
               this.$message.success("添加用户成功!");
               //隐藏添加用户弹框
               this.dialogFormVisible = false;
+              //重新获取用户
+              this.getusers();
             } else {
               this.$message.error("添加用户失败!");
               //隐藏添加用户弹框
