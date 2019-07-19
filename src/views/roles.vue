@@ -141,7 +141,7 @@ import {
   sureEditRole,
   deleterole,
   deleteRight,
-  allRightList,
+  allRightTree,
   roleAccredit
 } from "../api/http";
 export default {
@@ -321,7 +321,7 @@ export default {
       //得到的id添加给默认已分配权限数据
       this.defaultRight = rightId;
       //请求获取权限列表
-      allRightList().then(backData => {
+      allRightTree().then(backData => {
         if (backData.data.meta.status == 200) {
           //将获取到权限列表添加到权限数据
           this.data = backData.data.data;
