@@ -11,12 +11,48 @@
     </el-row>
     <!-- table表格 -->
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column label width="35">
-        <template slot-scope="scope">
-          <i class="el-icon-arrow-right"></i>
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <!-- 权限 -->
+          <el-row v-for="rightList in props.row.children">
+            <el-col :span="4">
+              <!-- 一级权限 -->
+              <el-tag
+                class="my-tag"
+                closable
+                type
+                @close="removeRight(props.row,rightList)"
+              >{{ rightList.authName }}</el-tag>
+              <span class="el-icon-arrow-right"></span>
+            </el-col>
+            <el-col :span="20">
+              <el-row v-for="twolevelRight in rightList.children">
+                <!-- 二级权限 -->
+                <el-col :span="6">
+                  <el-tag
+                    class="my-tag"
+                    closable
+                    type="success"
+                    @close="removeRight(props.row,twolevelRight)"
+                  >{{ twolevelRight.authName }}</el-tag>
+                  <span class="el-icon-arrow-right"></span>
+                </el-col>
+                <!-- 三级权限 -->
+                <el-col :span="18">
+                  <el-tag
+                    class="my-tag"
+                    closable
+                    type="warning"
+                    v-for="threeRight in twolevelRight.children"
+                    @close="removeRight(props.row,threeRight)"
+                  >{{ threeRight.authName }}</el-tag>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
         </template>
       </el-table-column>
-      <el-table-column type="index" width="35"></el-table-column>
+      <el-table-column type="index" width="50"></el-table-column>
       <el-table-column prop="roleName" label="角色名称"></el-table-column>
       <el-table-column prop="roleDesc" label="角色描述"></el-table-column>
       <el-table-column label="操作">
@@ -76,7 +112,7 @@
 </template>
 
 <script>
-import { roleList, appendRole, sureEditRole, deleterole } from "../api/http";
+import { roleList, appendRole, sureEditRole, deleterole, deleteRight } from "../api/http";
 export default {
   name: "roles",
   //数据
@@ -184,19 +220,31 @@ export default {
       })
         .then(() => {
           //请求删除角色
-          deleterole({id:row.id}).then(backData => {
-            if(backData.data.meta.status == 200){
-              this.$message.success('删除成功!')
+          deleterole({ id: row.id }).then(backData => {
+            if (backData.data.meta.status == 200) {
+              this.$message.success("删除成功!");
               //重新获取角色
               this.getRole();
-            }else{
-              this.$message.error('删除失败!')
+            } else {
+              this.$message.error("删除失败!");
             }
-          })
+          });
         })
         .catch(() => {
-          this.$message('已取消删除!')
+          this.$message("已取消删除!");
         });
+    },
+    //删除指定的权限
+    removeRight(role,right){
+      //请求删除
+      deleteRight({roleId:role.id,rightId:right.id}).then(backData => {
+        if(backData.data.meta.status == 200){
+          //将返回来的权限数据重新旧数据
+          role.children = backData.data.data;
+          //成功
+          this.$message.success('取消权限成功!')
+        }
+      })
     }
   },
   //生命钩子
@@ -210,5 +258,9 @@ export default {
 <style lang="less" scoped>
 .my-search {
   margin: 5px 0;
+}
+.my-tag {
+  margin-left: 5px;
+  margin-bottom: 5px;
 }
 </style>
