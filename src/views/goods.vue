@@ -6,7 +6,7 @@
     <el-row class="my-search">
       <!-- 输入框 -->
       <el-col :span="5">
-        <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
+        <el-input placeholder="请输入内容" v-model="query" class="input-with-select">
           <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
       </el-col>
@@ -17,17 +17,31 @@
     </el-row>
     <!-- table表格 -->
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column prop="date" label="日期" width="180"></el-table-column>
-      <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
+      <el-table-column type="index" width="50"></el-table-column>
+      <el-table-column prop="goods_name" label="商品名称"></el-table-column>
+      <el-table-column prop="goods_price" label="商品价格(元)" width="120"></el-table-column>
+      <el-table-column prop="goods_weight" label="商品重量" width="80"></el-table-column>
+      <el-table-column label="创建时间" width="180">
+        <template slot-scope="scope">
+          {{ scope.row.upd_time | formatTime('YYYY-MM-DD HH:mm:ss') }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="address" label="操作">
+        <template slot-scope="scope">
+          <!-- 修改商品 -->
+          <el-button type="primary" icon="el-icon-edit" size="mini" plain class="my-btn"></el-button>
+          <!-- 删除商品 -->
+          <el-button type="danger" icon="el-icon-delete" size="mini" plain></el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <!-- 分页 -->
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="pageIndex"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :current-page="pageNum"
+      :page-sizes="[10, 15, 20, 25]"
+      :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="400"
     ></el-pagination>
@@ -35,45 +49,49 @@
 </template>
 
 <script>
+//导入axios
+import { getCommodityList } from "../api/http";
 export default {
   name: "goods",
   //数据
   data() {
     return {
       //输入框内容
-      input3: "",
+      query: "",
       //表格内容
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ],
+      tableData: [],
       //当前页
-      pageIndex: 1
+      pageNum: 1,
+      //页容量
+      pageSize: 10,
+      //总共条数
+      pageTotal: 0
     };
+  },
+  //生命钩子
+  created() {
+    //获取商品列表
+    this.getCommodity();
   },
   //方法
   methods: {
     //分页方法
     handleSizeChange() {},
-    handleCurrentChange() {}
+    handleCurrentChange() {},
+    //获取商品数据列表
+    getCommodity() {
+      const list = {
+        query: this.query,
+        pagenum: this.pageNum,
+        pagesize: this.pageSize
+      };
+      //获取商品数据
+      getCommodityList(list).then(backData => {
+        if (backData.data.meta.status == 200) {
+          this.tableData = backData.data.data.goods;
+        }
+      });
+    }
   }
 };
 </script>
@@ -81,5 +99,8 @@ export default {
 <style lang="less" scoped>
 .my-search {
   margin: 5px 0;
+}
+.my_btn{
+  margin-left: 10px;
 }
 </style>

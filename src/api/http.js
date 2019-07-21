@@ -133,4 +133,14 @@ export const roleAccredit = ({roleId,rids}) => {
 //暴露接口 --权限列表
 export const allRightList = () => {
     return backstage.get('rights/list')
+};
+//暴露接口 --商品列表
+export const getCommodityList = ({query,pagenum,pagesize}) => {
+    return backstage.get('goods',{
+        params:{
+            query,
+            pagenum,
+            pagesize,
+        }
+    })
 }
