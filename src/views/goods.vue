@@ -43,7 +43,7 @@
       :page-sizes="[10, 15, 20, 25]"
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
+      :total="pageTotal"
     ></el-pagination>
   </div>
 </template>
@@ -76,8 +76,18 @@ export default {
   //方法
   methods: {
     //分页方法
-    handleSizeChange() {},
-    handleCurrentChange() {},
+    handleSizeChange(size) {
+      //改变页容量
+      this.pageSize = size;
+      //重新获取商品列表
+      this.getCommodity();
+    },
+    handleCurrentChange(current) {
+      //改变当前页
+      this.pageNum = current;
+      //重新获取商品数据
+      this.getCommodity();
+    },
     //获取商品数据列表
     getCommodity() {
       const list = {
@@ -89,6 +99,7 @@ export default {
       getCommodityList(list).then(backData => {
         if (backData.data.meta.status == 200) {
           this.tableData = backData.data.data.goods;
+          this.pageTotal = backData.data.data.total;
         }
       });
     }
