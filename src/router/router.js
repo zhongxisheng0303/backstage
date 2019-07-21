@@ -19,6 +19,10 @@ import categories from '../views/categories.vue';
 import orders from '../views/orders.vue';
 import reports from '../views/reports.vue';
 
+//导入商品管理嵌套路由
+import goodsindex from '../views/goods/component/goodsindex.vue';
+import goodsadd from '../views/goods/component/goodsadd.vue';
+
 //路由规则
 const routes = [
     //重定向
@@ -58,6 +62,17 @@ const routes = [
             {
                 path: 'goods',
                 component: goods,
+                //嵌套路由
+                children: [
+                    {
+                        path: '',
+                        component: goodsindex,
+                    },
+                    {
+                        path: 'goodsadd',
+                        component: goodsadd,
+                    }
+                ]
             },
             //分类参数
             {
