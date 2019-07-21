@@ -6,8 +6,8 @@
     <el-row class="my-search">
       <!-- 输入框 -->
       <el-col :span="5">
-        <el-input placeholder="请输入内容" v-model="query" class="input-with-select">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input placeholder="请输入内容" v-model="query" class="input-with-select" @keyup.enter.native="search">
+          <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
         </el-input>
       </el-col>
       <!-- 按钮 -->
@@ -102,6 +102,11 @@ export default {
           this.pageTotal = backData.data.data.total;
         }
       });
+    },
+    //搜索关键字
+    search(){
+      //获取商品数据列表
+      this.getCommodity();
     }
   }
 };
