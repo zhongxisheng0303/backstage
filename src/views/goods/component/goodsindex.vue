@@ -109,7 +109,9 @@ export default {
       //获取商品数据列表
       this.getCommodity();
     },
+    //跳转到添加商品的组件
     add() {
+      //编程式导航
       this.$router.push("/index/goods/goodsadd");
     }
   }
