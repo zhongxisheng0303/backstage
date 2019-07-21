@@ -334,9 +334,7 @@ export default {
     //确定分配权限
     allocation() {
       //将获取到的id数组转换成用逗号隔开的字符串
-      const rids1 = this.$refs.tree.getHalfCheckedKeys().join(',');
-      const rids2 = this.$refs.tree.getCheckedKeys().join(',');
-      const rids = rids1+','+rids2;
+      const rids = [...this.$refs.tree.getHalfCheckedKeys(),...this.$refs.tree.getCheckedKeys()].join(',');
       //获取角色id
       const roleId = this.editrole.id;
       //请求角色授权
