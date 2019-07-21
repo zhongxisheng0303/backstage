@@ -25,11 +25,14 @@
           :on-remove="handleRemove"
           list-type="picture"
         >
-          <el-button size="small" type="primary">点击上传</el-button>
+          <el-button size="small" type="primary">点击上传图片</el-button>
           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
         </el-upload>
       </el-tab-pane>
-      <el-tab-pane name="5" label="商品内容"></el-tab-pane>
+      <el-tab-pane name="5" label="商品内容">
+        <quillEditor></quillEditor>
+        <el-button type="primary" class="my-addBtn">添加商品</el-button>
+      </el-tab-pane>
     </el-tabs>
     <!-- 大图预览图片 -->
     <transition name="slide-fade">
@@ -41,6 +44,12 @@
 </template>
 
 <script>
+//导入富文本
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+import { quillEditor } from "vue-quill-editor";
+//导入axios
 export default {
   name: "goodsadd",
   //数据
@@ -50,9 +59,14 @@ export default {
       active: "1",
       //设置token
       headers: { Authorization: window.sessionStorage.getItem("token") },
+      //大图预览
       showImg: false,
       imgUrl: ""
     };
+  },
+  //注册组件
+  components: {
+    quillEditor
   },
   //方法
   methods: {
@@ -102,5 +116,8 @@ export default {
 .slide-fade-leave-to {
   transform: translateY(-10px);
   opacity: 0;
+}
+.my-addBtn{
+    margin-top: 5px;
 }
 </style>
