@@ -50,7 +50,7 @@
 
 <script>
 //导入axios
-import { getCommodityList } from "../api/http";
+import { getCommodityList } from "../../api/http";
 export default {
   name: "goods",
   //数据

@@ -13,7 +13,7 @@ import index from '../views/index.vue';
 import users from '../views/users.vue';
 import roles from '../views/roles.vue';
 import rights from '../views/rights.vue';
-import goods from '../views/goods.vue';
+import goods from '../views/goods/goods.vue';
 import params from '../views/params.vue';
 import categories from '../views/categories.vue';
 import orders from '../views/orders.vue';
