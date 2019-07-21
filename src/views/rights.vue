@@ -40,7 +40,6 @@ export default {
           break;
       }
       }
-      console.log(backData.data.data);
       this.tableData = backData.data.data;
     })
   },
