@@ -143,4 +143,20 @@ export const getCommodityList = ({query,pagenum,pagesize}) => {
             pagesize,
         }
     })
+};
+//暴露接口 --商品数据列表
+export const getDataList = () => {
+    return backstage.get('categories',{
+        params:{
+            type: 3,
+        }
+    })
+};
+//暴露接口 --分类参数列表
+export const getClassify = ({id,sel}) => {
+    return backstage.get(`categories/${id}/attributes`,{
+        params:{
+            sel,
+        }
+    })
 }
