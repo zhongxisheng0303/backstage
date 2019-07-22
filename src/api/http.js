@@ -170,3 +170,13 @@ export const getPageList = ({pagenum,pagesize}) => {
         }
     })
 };
+//暴露接口 --订单列表
+export const getorderList = ({query,pagenum,pagesize}) => {
+    return backstage.get('orders',{
+        params:{
+            query,
+            pagenum,
+            pagesize,
+        }
+    })
+}
