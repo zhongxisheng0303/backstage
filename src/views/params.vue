@@ -21,7 +21,7 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="动态参数" name="first">
         <!-- 按钮 -->
-        <el-button type="primary" disabled class="my-size" size="small">添加动态参数</el-button>
+        <el-button type="primary" :disabled="ifDisabled" class="my-size" size="small">添加动态参数</el-button>
         <!-- table表格 -->
         <el-table :data="tableData" border style="width: 100%">
           <el-table-column type="expand">
@@ -57,12 +57,12 @@
       </el-tab-pane>
       <el-tab-pane label="静态参数" name="second">
         <!-- 按钮 -->
-        <el-button type="primary" disabled class="my-size" size="small">添加静态参数</el-button>
+        <el-button type="primary" :disabled="ifDisabled" class="my-size" size="small">添加静态参数</el-button>
         <!-- table表格 -->
-        <el-table :data="tableData" border style="width: 100%">
+        <el-table :data="staticData" border style="width: 100%">
           <el-table-column type="index" width="50"></el-table-column>
-          <el-table-column prop="date" label="属性名称" width="180"></el-table-column>
-          <el-table-column prop="name" label="属性值"></el-table-column>
+          <el-table-column prop="attr_name" label="属性名称" width="180"></el-table-column>
+          <el-table-column prop="attr_vals" label="属性值"></el-table-column>
           <el-table-column label="操作"></el-table-column>
         </el-table>
       </el-tab-pane>
@@ -77,8 +77,13 @@ export default {
   //数据
   data() {
     return {
-      //表格内容
+      //动态表格内容
       tableData: [],
+      //静态表格内容
+      staticData: [],
+      //添加按钮状态
+      ifDisabled: true,
+      //属性数据
       inputVisible: false,
       inputValue: "",
       //选择框内容
@@ -93,13 +98,11 @@ export default {
   methods: {
     //级联选择器方法
     handleChange(value) {
+      //开启添加按钮
+      this.ifDisabled = false;
       const id = value[value.length - 1];
-      //获取分类参数列表
-      this.getClassifyList(id, "many");
-    },
-    //获取分类参数列表
-    getClassifyList(id, state) {
-      getClassify({ id, sel: state }).then(backData => {
+      //获取动态分类参数列表
+      getClassify({ id, sel: "many" }).then(backData => {
         //循环数据
         for (let i = 0; i < backData.data.data.length; i++) {
           //将attr_vals数据分隔成数组
@@ -108,6 +111,10 @@ export default {
           ].attr_vals.split(",");
         }
         this.tableData = backData.data.data;
+      });
+      //获取静态分类参数列表
+      getClassify({ id, sel: "only" }).then(backData => {
+        this.staticData = backData.data.data;
       });
     },
     //标签页方法
