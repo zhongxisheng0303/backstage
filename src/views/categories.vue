@@ -10,62 +10,108 @@
       </el-col>
     </el-row>
     <!-- table表格 -->
-    <el-table :data="tableData" border style="width: 100%">
-      <el-table-column prop="date" label="日期" width="180"></el-table-column>
-      <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
+    <el-table
+      :data="tableData"
+      style="width: 100%;margin-bottom: 20px;"
+      row-key="cat_id"
+      border
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+    >
+      <el-table-column prop="cat_name" label="分类" sortable width="180"></el-table-column>
+      <el-table-column label="级别" sortable width="180">
+        <template slot-scope="scope">{{ scope.row.cat_level | formatLevel }}</template>
+      </el-table-column>
+      <el-table-column label="是否有效" sortable width="180">
+        <template slot-scope="scope">{{ scope.row.cat_deleted | formatDeleted }}</template>
+      </el-table-column>
+      <el-table-column label="操作"></el-table-column>
     </el-table>
     <!-- 分页 -->
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="pageIndex"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :current-page="pagenum"
+      :page-sizes="[5, 8, 12, 15]"
+      :page-size="pagesize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
+      :total="pageTotal"
     ></el-pagination>
   </div>
 </template>
 
 <script>
+//导入axios
+import { getPageList } from "../api/http";
 export default {
   name: "categories",
   //数据
   data() {
     return {
       //表格内容
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ],
+      tableData: [],
       //当前页
-      pageIndex: 1
+      pagenum: 1,
+      //页容量
+      pagesize: 5,
+      //总条数
+      pageTotal: 0
     };
   },
   //方法
   methods: {
     //分页方法
-    handleSizeChange() {},
-    handleCurrentChange() {}
+    handleSizeChange(size) {
+      this.pagesize = size;
+      //重新获取商品数据
+      this.getData();
+    },
+    handleCurrentChange(current) {
+      this.pagenum = current;
+      //重新获取商品数据
+      this.getData();
+    },
+    //获取商品数据
+    getData() {
+      getPageList({ pagenum: this.pagenum, pagesize: this.pagesize }).then(
+        backData => {
+          if (backData.data.meta.status == 200) {
+            this.tableData = backData.data.data.result;
+            //总条数
+            this.pageTotal = backData.data.data.total;
+          }
+        }
+      );
+    }
+  },
+  //生命钩子
+  created() {
+    //获取商品数据
+    this.getData();
+  },
+  //过滤器
+  filters: {
+    //过滤等级
+    formatLevel(level) {
+      switch (level) {
+        case 0:
+          return "一级";
+          break;
+        case 1:
+          return "二级";
+          break;
+        case 2:
+          return "三级";
+          break;
+      }
+    },
+    //过滤是否有效
+    formatDeleted(deleted){
+      if(deleted){
+        return "无效"
+      }else{
+        return "有效"
+      }
+    }
   }
 };
 </script>

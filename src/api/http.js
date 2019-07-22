@@ -159,4 +159,14 @@ export const getClassify = ({id,sel}) => {
             sel,
         }
     })
-}
+};
+//暴露接口 --商品数据分页列表
+export const getPageList = ({pagenum,pagesize}) => {
+    return backstage.get('categories',{
+        params:{
+            type: 3,
+            pagenum,
+            pagesize,
+        }
+    })
+};
