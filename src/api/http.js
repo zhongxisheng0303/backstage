@@ -179,4 +179,8 @@ export const getorderList = ({query,pagenum,pagesize}) => {
             pagesize,
         }
     })
+};
+//暴露接口 --数据报表
+export const getstatement = () => {
+    return backstage.get('reports/type/1')
 }

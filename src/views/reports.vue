@@ -14,6 +14,7 @@
 <script>
 //导入echarts
 import echarts from "echarts";
+import { getstatement } from "../api/http";
 export default {
   name: "reports",
   //数据
@@ -22,7 +23,7 @@ export default {
       //指定图片的配置和数据
       option: {
         title: {
-          text: "堆叠区域图"
+          text: "用户来源"
         },
         tooltip: {
           trigger: "axis",
@@ -106,18 +107,31 @@ export default {
     };
   },
   //生命钩子
-  mounted() {
-    //获取dom
-    const mychart = echarts.init(this.$refs.main);
-    //指定的配置项和数据显示图表。
-    mychart.setOption(this.option);
+  mounted() {},
+  created() {
+    //获取数据报表
+    getstatement().then(backData => {
+      //地区
+      this.option.legend = backData.data.data.legend;
+      //日期
+      this.option.xAxis[0].data = backData.data.data.xAxis[0].data;
+      //数据
+      this.option.series = backData.data.data.series;
+      // 注册了一个回调函数，会在dom更新完毕之后触发
+      this.$nextTick(() => {
+        //获取dom
+        const mychart = echarts.init(this.$refs.main);
+        //指定的配置项和数据显示图表。
+        mychart.setOption(this.option);
+      });
+    });
   }
 };
 </script>
 
 <style lang="less" scoped>
-.my-data{
-    background-color: #fff;
-    margin-top: 5px;
+.my-data {
+  background-color: #fff;
+  margin-top: 5px;
 }
 </style>
