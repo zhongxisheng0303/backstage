@@ -8,6 +8,7 @@ Vue.use(VueRouter)
 //导入页面组件
 import login from '../views/login.vue';
 import index from '../views/index.vue';
+import error from '../views/error.vue';
 
 //导入嵌套路由
 import users from '../views/users.vue';
@@ -95,6 +96,15 @@ const routes = [
                 component: reports,
             },
         ]
+    },
+    //错误页面
+    {
+        path: '/error',
+        component: error,
+    },
+    {
+        path: '*',
+        component: error,
     }
 
 ];
