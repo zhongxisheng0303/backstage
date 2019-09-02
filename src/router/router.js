@@ -1,28 +1,28 @@
 //导入Vue
-import Vue from 'vue';
+import Vue from 'vue'
 
 //导入路由
-import VueRouter from 'vue-router';
+import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 //导入页面组件
-import login from '../views/login.vue';
-import index from '../views/index.vue';
-import error from '../views/error.vue';
+import login from '../views/login.vue'
+import index from '../views/index.vue'
+import error from '../views/error.vue'
 
 //导入嵌套路由
-import users from '../views/users.vue';
-import roles from '../views/roles.vue';
-import rights from '../views/rights.vue';
-import goods from '../views/goods/goods.vue';
-import params from '../views/params.vue';
-import categories from '../views/categories.vue';
-import orders from '../views/orders.vue';
-import reports from '../views/reports.vue';
+import users from '../views/users.vue'
+import roles from '../views/roles.vue'
+import rights from '../views/rights.vue'
+import goods from '../views/goods/goods.vue'
+import params from '../views/params.vue'
+import categories from '../views/categories.vue'
+import orders from '../views/orders.vue'
+import reports from '../views/reports.vue'
 
 //导入商品管理嵌套路由
-import goodsindex from '../views/goods/component/goodsindex.vue';
-import goodsadd from '../views/goods/component/goodsadd.vue';
+import goodsindex from '../views/goods/component/goodsindex.vue'
+import goodsadd from '../views/goods/component/goodsadd.vue'
 
 //路由规则
 const routes = [

@@ -55,6 +55,9 @@ export default {
             trigger: "blur"
           }
         ]
+      },
+      devData:{
+        name: '呵呵'
       }
     };
   },
